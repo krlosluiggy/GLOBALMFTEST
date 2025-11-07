@@ -113,3 +113,4 @@ terraform.tfstate.backup
 !**/.env.example
 !**/env.example.json
 !README.md
+.vercel
