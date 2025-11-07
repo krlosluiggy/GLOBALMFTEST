@@ -1,0 +1,428 @@
+{
+	"info": {
+		"_postman_id": "globalmf-test-collection",
+		"name": "Global MF - Sistema de Gestión de Cursos",
+		"description": "Colección completa de endpoints para el sistema de gestión de cursos. Incluye autenticación, CRUD de programas, CRUD de usuarios y GraphQL.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"token\", jsonData.access_token);",
+									"    pm.environment.set(\"userId\", jsonData.user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@test.com\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login con credenciales de administrador. Retorna un JWT token que se guarda automáticamente."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/profile",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "profile"]
+						},
+						"description": "Obtiene el perfil del usuario autenticado. Requiere JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Cierra la sesión del usuario."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticación"
+		},
+		{
+			"name": "Programs",
+			"item": [
+				{
+					"name": "List Programs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/programs?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["programs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número de página"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Resultados por página"
+								},
+								{
+									"key": "search",
+									"value": "desarrollo",
+									"disabled": true,
+									"description": "Buscar por nombre"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"disabled": true,
+									"description": "Filtrar por estado: active, inactive, completed"
+								}
+							]
+						},
+						"description": "Lista todos los programas con paginación y filtros opcionales. Endpoint público."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Program by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/programs/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["programs", "1"]
+						},
+						"description": "Obtiene un programa específico por ID. Endpoint público."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Program",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"programId\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Inteligencia Artificial Avanzada\",\n    \"description\": \"Curso completo de IA, Machine Learning y Deep Learning con Python, TensorFlow y PyTorch.\",\n    \"start_date\": \"2025-05-01\",\n    \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/programs",
+							"host": ["{{baseUrl}}"],
+							"path": ["programs"]
+						},
+						"description": "Crea un nuevo programa. Requiere autenticación JWT."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Program",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Inteligencia Artificial Avanzada - Actualizado\",\n    \"description\": \"Curso completo actualizado con nuevos contenidos de GPT-4 y modelos de lenguaje.\",\n    \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/programs/{{programId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["programs", "{{programId}}"]
+						},
+						"description": "Actualiza un programa existente. Requiere autenticación JWT."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Program",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/programs/{{programId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["programs", "{{programId}}"]
+						},
+						"description": "Elimina un programa. Requiere autenticación JWT."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Program Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/programs/1/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["programs", "1", "users"]
+						},
+						"description": "Obtiene todos los usuarios registrados en un programa específico. Endpoint público."
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD completo de programas/cursos"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"]
+						},
+						"description": "Lista todos los usuarios registrados en cursos."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "1"]
+						},
+						"description": "Obtiene un usuario específico por ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Create User (Public Registration)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"userId\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"program_id\": 1,\n    \"full_name\": \"Test User Postman\",\n    \"email\": \"testuser@postman.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"]
+						},
+						"description": "Registra un nuevo usuario a un curso. Endpoint público (no requiere autenticación)."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"Test User Updated\",\n    \"email\": \"updated@postman.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"description": "Actualiza los datos de un usuario."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"description": "Elimina un usuario del sistema."
+					},
+					"response": []
+				}
+			],
+			"description": "CRUD completo de usuarios"
+		},
+		{
+			"name": "GraphQL",
+			"item": [
+				{
+					"name": "Query Programs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"query GetPrograms($filter: FilterProgramInput, $page: Int) { programs(filter: $filter, page: $page) { items { id name description start_date status created_at updated_at } total } }\",\n    \"variables\": {\n        \"filter\": {\n            \"status\": \"active\"\n        },\n        \"page\": 1\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": ["{{baseUrl}}"],
+							"path": ["graphql"]
+						},
+						"description": "Query GraphQL para obtener programas con filtros."
+					},
+					"response": []
+				},
+				{
+					"name": "Query All Programs (Simple)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"{ programs(page: 1) { items { id name status } total } }\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": ["{{baseUrl}}"],
+							"path": ["graphql"]
+						},
+						"description": "Query GraphQL simple para obtener todos los programas."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints GraphQL"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "programId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -1,0 +1,27 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ProgramModel {
+  created_at: DateTime!
+  description: String
+  id: Int!
+  name: String!
+  start_date: DateTime!
+  status: String!
+  updated_at: DateTime!
+}
+
+type ProgramResponse {
+  data: [ProgramModel!]!
+  total: Int!
+}
+
+type Query {
+  programs(filter: String! = "", limit: Int! = 10, page: Int! = 1): ProgramResponse!
+}

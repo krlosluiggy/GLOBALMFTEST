@@ -1,0 +1,115 @@
+# ---------------------------
+# 🧩 GENERAL
+# ---------------------------
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Entornos locales
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de entorno reales (solo mantener los .example)
+**/.env
+!**/.env.example
+!**/env.example.json
+
+# Archivos de logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Archivos temporales
+.tmp
+.temp
+.cache
+*.swp
+*.swo
+
+# Cobertura y reportes de test
+coverage/
+.nyc_output/
+*.lcov
+
+# Dependencias
+node_modules/
+bower_components/
+
+# Archivos de build / distribución
+dist/
+build/
+out/
+.next/
+.next/cache/
+serverless/
+.lambda/
+
+# Archivos de lock alternativos (si no se usan)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ---------------------------
+# 🧩 FRONTEND (React / Next.js)
+# ---------------------------
+# Archivos generados
+.next/
+out/
+.vercel/
+.vscode/
+.idea/
+
+# Archivos estáticos generados
+/public/static/
+**/.eslintcache
+*.tsbuildinfo
+
+# ---------------------------
+# 🧩 BACKEND (Node / NestJS)
+# ---------------------------
+# Builds de Nest o compilación de TypeScript
+dist/
+*.tsbuildinfo
+.cache/
+logs/
+tmp/
+
+# ---------------------------
+# 🧩 INFRA (AWS / Terraform / Amplify)
+# ---------------------------
+amplify/
+.aws/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+*.pem
+
+# ---------------------------
+# 🧩 POSTMAN
+# ---------------------------
+# Exportaciones temporales de Postman
+*.postman_collection.json
+!postman/env.example.json
+
+# ---------------------------
+# 🧩 MISC
+# ---------------------------
+.idea/
+.vscode/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# ---------------------------
+# ✅ EXCEPCIONES (mantener ejemplos)
+# ---------------------------
+!**/.gitkeep
+!**/.env.example
+!**/env.example.json
+!README.md
