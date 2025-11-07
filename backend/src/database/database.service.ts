@@ -9,13 +9,24 @@ export class DatabaseService implements OnModuleInit , OnModuleDestroy {
     constructor(private configService: ConfigService) {}
     
     async onModuleInit() {
-        this.pool = new Pool({
-            host: this.configService.get<string>('DB_HOST'),
-            port: this.configService.get<number>('DB_PORT'),
-            user: this.configService.get<string>('DB_USER'),
-            password: this.configService.get<string>('DB_PASSWORD'),
-            database: this.configService.get<string>('DB_NAME'),
-        });
+        const databaseUrl = this.configService.get<string>('DATABASE_URL');
+
+        if (databaseUrl) {
+            // Usar connection string (Neon, Railway, etc.)
+            this.pool = new Pool({
+                connectionString: databaseUrl,
+                ssl: { rejectUnauthorized: false }
+            });
+        } else {
+            // Usar configuración individual (local)
+            this.pool = new Pool({
+                host: this.configService.get<string>('DB_HOST'),
+                port: this.configService.get<number>('DB_PORT'),
+                user: this.configService.get<string>('DB_USER'),
+                password: this.configService.get<string>('DB_PASSWORD'),
+                database: this.configService.get<string>('DB_NAME'),
+            });
+        }
 
         try {
             const client = await this.pool.connect();
